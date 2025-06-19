@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sticky Notes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <p v-if="stickies.length === 0" style="color: plum; font-size: 1.2rem; text-align: center; grid-column: 1 / -1;">
+    Click the + button to create note!
+    </p>
+    
+    <main id="app">
+        <!-- Vue-powered add button -->
+       
+        <!-- Dynamic sticky notes created by Vue -->
+        <div   
+            v-for="(stickie, index) in stickies" 
+            :key="stickie.id"
+            style="display: flex; flex-direction: column;"
+        >
+         <textarea 
+            ref="stickieInputs"
+            v-model="stickie.text" 
+            @keyup.delete="onDeleteKey(index)" 
+            @keydown.tab.prevent="onTabKey($event, index)" 
+            @keydown.left="onArrowLeft($event, index)"
+            @keydown.right="onArrowRight($event, index)"
+            @click.alt="changeColor(index)"
+            :style="{backgroundColor: stickie.color}"
+            draggable="true"
+            @dragstart="onDragStart($event, index)"
+            @dragend="onDragEnd($event)"
+            @dragover="onDragOver($event)"
+            @drop="onDrop($event, index)"
+            @dragenter="onDragEnter($event)"
+            :class="{ 'dragging': draggedIndex === index }"
+            :placeholder="index === 0 ? 
+                '• Type your note here\n• Alt + click to change color\n• Press Delete to remove empty note\n• Press Tab in last note to add another' 
+                : ''"
+        ></textarea>
+        <small style="color: white; margin-top: 0.25rem; font-size: 0.8rem;">
+            Created: {{ stickie.createdAt }}
+        </small>
+        </div>
+         <button @click="addStickie">
+            <svg viewBox="0 0 45.402 45.402">
+                <path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.12,4.135v14.432H4.141c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435c2.283,0,4.134-1.867,4.133-4.150C45.399,20.425,43.548,18.557,41.267,18.557z" />
+            </svg>
+        </button>
+        <p style="color: plum; font-size: 1rem; text-align: center; grid-column: 1 / -1;">
+            Notes: {{ stickies.length }}
+        </p>
+    </main>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
